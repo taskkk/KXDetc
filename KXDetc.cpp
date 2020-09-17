@@ -25,10 +25,10 @@ public:
 
 int main()
 {
-  int DescriptorDim;
-  MySVM svm;//SVM分类器
-  svm.load("SVM_HOG.xml");
-  DescriptorDim = svm.get_var_count();
+	int DescriptorDim;
+ 	MySVM svm;//SVM分类器
+ 	svm.load("SVM_HOG.xml");
+ 	DescriptorDim = svm.get_var_count();
 	int supportVectorNum = svm.get_support_vector_count();
 	cout<<"支持向量个数："<<supportVectorNum<<endl;
 	//初始化
@@ -36,27 +36,13 @@ int main()
 	Mat supportVectorMat = Mat::zeros(supportVectorNum, DescriptorDim, CV_32FC1);
 	Mat resultMat = Mat::zeros(1, DescriptorDim, CV_32FC1);
 	//将支持向量的数据复制到supportVectorMat矩阵中
-  for(int i=0; i<supportVectorNum; i++)
+ 	for(int i=0; i<supportVectorNum; i++)
 	{
 		const float * pSVData = svm.get_support_vector(i);//返回第i个支持向量的数据指针
 		for(int j=0; j<DescriptorDim; j++)
 		{
-				supportVectorMat.at<float>(i,j) = pSVData[j];
+			supportVectorMat.at<float>(i,j) = pSVData[j];
 		}
-	}
-  //将alpha向量的数据复制到alphaMat中
-	double * pAlphaData = svm.get_alpha_vector();//返回SVM的决策函数中的alpha向量
-	for(int i=0; i<supportVectorNum; i++)
-		alphaMat.at<float>(0,i) = pAlphaData[i];
-	//计算-(alphaMat * supportVectorMat),结果放到resultMat中
-	//gemm(alphaMat, supportVectorMat, -1, 0, 1, resultMat);//为什么加负号？？？？
-	resultMat = -1 * alphaMat * supportVectorMat;
-	//得到最终的setSVMDetector(const vector<float>& detector)参数中可用的检测子
-	vector<float> myDetector;
-	//将resultMat中的数据复制到数组myDetector中
-	for(int i=0; i<DescriptorDim; i++)
-	{
-		myDetector.push_back(resultMat.at<float>(0,i));
 	}
   	//将alpha向量的数据复制到alphaMat中
 	double * pAlphaData = svm.get_alpha_vector();//返回SVM的决策函数中的alpha向量
@@ -73,7 +59,7 @@ int main()
 	//最后添加偏移量rho，得到检测子
 	myDetector.push_back(svm.get_rho());
 	cout<<"检测子维数："<<myDetector.size()<<endl;
-  //设置HOGDescriptor的检测子
+	//设置HOGDescriptor的检测子
 	HOGDescriptor myHOG;
 	myHOG.setSVMDetector(myDetector);
 	//myHOG.setSVMDetector(HOGDescriptor::getDefaultPeopleDetector());
